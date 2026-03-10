@@ -1,6 +1,6 @@
 // Configuración de Supabase
-const SUBAPASE_URL = "TU_URL_DE_SUPABASE"; 
-const SUPABASE_KEY = "TU_ANON_PUBLIC_KEY"; // La encuentras en Settings > API
+const SUBAPASE_URL = "https://slngipevncuhjmuonrtg.supabase.co"; 
+const SUPABASE_KEY = "PEGA_AQUÍ_TU_ANON_PUBLIC_KEY";
 
 async function loadStudents() {
     const response = await fetch(`${SUBAPASE_URL}/rest/v1/Students?select=*`, {
