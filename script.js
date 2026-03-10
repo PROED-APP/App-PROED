@@ -1,27 +1,34 @@
-async function sendNote(studentName, type) {
-    const parentEmail = "tu-correo@ejemplo.com"; // Aquí iría el correo del padre desde la DB
-    
-    alert(`Iniciando envío de correo para ${studentName}...`);
+// Configuración de Supabase
+const SUBAPASE_URL = "TU_URL_DE_SUPABASE"; 
+const SUPABASE_KEY = "TU_ANON_PUBLIC_KEY"; // La encuentras en Settings > API
 
-    try {
-        const response = await fetch('/api/send-email', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                studentName: studentName,
-                type: type,
-                description: "Registro de actividad diaria en el aula.",
-                parentEmail: parentEmail
-            })
-        });
-
-        const result = await response.json();
-        if (result.success) {
-            alert("¡Correo enviado con éxito al representante!");
-        } else {
-            alert("Error al enviar: " + result.error);
+async function loadStudents() {
+    const response = await fetch(`${SUBAPASE_URL}/rest/v1/Students?select=*`, {
+        headers: {
+            "apikey": SUPABASE_KEY,
+            "Authorization": `Bearer ${SUPABASE_KEY}`
         }
-    } catch (error) {
-        alert("Error de conexión con el servidor.");
-    }
+    });
+    const students = await response.json();
+    renderStudents(students);
 }
+
+function renderStudents(students) {
+    const container = document.getElementById('students-container');
+    container.innerHTML = ""; // Limpiar carga
+
+    students.forEach(student => {
+        const card = `
+            <div class="card">
+                <h3>${student.first_name} ${student.last_name}</h3>
+                <p>ID: ${student.student_id}</p>
+                <button onclick="sendNote('${student.student_id}', 'Positive')">Refuerzo +</button>
+                <button onclick="sendNote('${student.student_id}', 'Improvement')">Nota Mejora</button>
+            </div>
+        `;
+        container.innerHTML += card;
+    });
+}
+
+// Llamar a la función al cargar la página
+window.onload = loadStudents;
